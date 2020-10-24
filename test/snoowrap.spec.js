@@ -2007,8 +2007,8 @@ describe('snoowrap', function () {
     });
 
     it('can view a list of conversation from a subreddit', async () => {
-      const conversations = await r.getSubreddit('SpyTecSnoowrapTesting').getNewModmailConversations({limit: 2});
-      expect(conversations).to.have.lengthOf(2);
+      const conversations = await r.getSubreddit('SpyTecSnoowrapTesting').getNewModmailConversations({limit: 1});
+      expect(conversations).to.have.lengthOf(1);
       expect(conversations).to.be.an.instanceof(snoowrap.objects.Listing);
       expect(conversations[0]).to.be.an.instanceof(snoowrap.objects.ModmailConversation);
       expect(await conversations[0].participant).to.be.an.instanceof(snoowrap.objects.ModmailConversationAuthor);
@@ -2020,10 +2020,17 @@ describe('snoowrap', function () {
       expect(conversation.participant).to.be.an.instanceof(snoowrap.objects.ModmailConversationAuthor);
     });
 
+    it('can reply to a conversation', async () => {
+      let conversation = r.getNewModmailConversation('75hxt');
+      await conversation.reply('testing1', true, true);
+      conversation = await conversation.refresh();
+      expect(conversation.messages[conversation.messages.length - 1].bodyMarkdown).to.equal('testing1');
+      // replying auto-unarchives. Archive to restore to default
+      await conversation.archive();
+    });
+
     it('can archive a conversation', async () => {
       let conversation = await r.getNewModmailConversation('75hxt').fetch();
-      expect(conversation.state).to.not.equal(snoowrap.objects.ModmailConversation.conversationStates.Archived);
-
       await conversation.archive();
       conversation = await conversation.refresh();
       expect(conversation.state).to.equal(snoowrap.objects.ModmailConversation.conversationStates.Archived);

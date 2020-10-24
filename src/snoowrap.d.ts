@@ -67,6 +67,7 @@ declare class Snoowrap {
   getFriends(): Promise<_RedditUser[]>;
   getGoldSubreddits(options?: ListingOptions): Promise<_Listing<_Subreddit>>;
   getHot(subredditName?: string, options?: ListingOptions): Promise<_Listing<_Submission>>;
+  getBest(options?: ListingOptions): Promise<_Listing<_Submission>>;
   getInbox(options?: { filter?: string }): Promise<_Listing<_PrivateMessage | _Comment>>;
   getKarma(): Promise<Array<{ sr: _Subreddit; comment_karma: number; link_karma: number; }>>;
   getLivethread(threadId: string): _LiveThread;
@@ -89,7 +90,7 @@ declare class Snoowrap {
   bulkReadNewModmail(subs: Array<_Subreddit | string>, state: 'new'|'inprogress'|'mod'|'notifications'|'archived'|'highlighted'|'all'): Promise<_Listing<_ModmailConversation>>;
   getNewSubreddits(options?: ListingOptions): Promise<_Listing<_Subreddit>>;
   getOauthScopeList(): Promise<{ [key: string]: { description: string; id: string; name: string } }>;
-  getPopularSubreddit(options?: ListingOptions): Promise<_Listing<_Subreddit>>;
+  getPopularSubreddits(options?: ListingOptions): Promise<_Listing<_Subreddit>>;
   getPreferences(): Promise<any>;
   getRandomSubmission(subredditName?: string): Promise<_Submission>;
   getRising(subredditName?: string, options?: ListingOptions): Promise<_Listing<_Submission>>;
@@ -238,6 +239,15 @@ declare namespace Snoowrap {
   export interface SearchOptions extends BaseSearchOptions {
     subreddit?: _Subreddit | string;
     restrictSr?: boolean;
+    after?: string;
+    before?: string;
+    category?: string;
+    count?: number;
+    include_facets?: boolean;
+    limit?: number
+    show?: 'all',
+    sr_detail?: string
+    type?: string
   }
 
   export interface Trophy {
